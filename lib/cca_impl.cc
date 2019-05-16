@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2019 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2019 .
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,16 @@
 
 #include <gnuradio/io_signature.h>
 #include "cca_impl.h"
+#include <cstdint>
+
 
 namespace gr {
   namespace dash7 {
+
+	const std::size_t cca_impl::MAX_CHANNELS = 280;
+	const std::size_t cca_impl::QUEUE_LEN = 5;
+	const std::size_t cca_impl::CONGESTION_TIMEOUT = 1;
+	const std::size_t cca_impl::INITIAL_TIMEOUT = 15;
 
     cca::sptr
     cca::make()
@@ -40,9 +47,15 @@ namespace gr {
      */
     cca_impl::cca_impl()
       : gr::block("cca",
-              gr::io_signature::make(<+MIN_IN+>, <+MAX_IN+>, sizeof(<+ITYPE+>)),
-              gr::io_signature::make(<+MIN_OUT+>, <+MAX_OUT+>, sizeof(<+OTYPE+>)))
-    {}
+              gr::io_signature::make(1, 1, sizeof(float)),
+              gr::io_signature::make(1, 1, sizeof(int))),
+		channel_queue(QUEUE_LEN)
+    {
+		for (int& channel: this->channel_queue)
+		{
+			channel = rand() % 280;
+		}	
+	}
 
     /*
      * Our virtual destructor.
@@ -54,7 +67,7 @@ namespace gr {
     void
     cca_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+      ninput_items_required[0] = noutput_items;
     }
 
     int
@@ -63,15 +76,24 @@ namespace gr {
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
-      const <+ITYPE+> *in = (const <+ITYPE+> *) input_items[0];
-      <+OTYPE+> *out = (<+OTYPE+> *) output_items[0];
+      const float *in = (const float *) input_items[0];
+      int *out = (int *) output_items[0];
 
-      // Do <+signal processing+>
-      // Tell runtime system how many input items we consumed on
-      // each input stream.
+		
+		for (int i = 0; i < noutput_items; ++i)
+		{
+			if (this->channel_queue.empty())
+			{
+				out[i] = 0;
+			}
+			else
+			{
+				out[i] = 1;
+			}
+		}
+
       consume_each (noutput_items);
 
-      // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 

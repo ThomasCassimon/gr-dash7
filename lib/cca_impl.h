@@ -22,6 +22,7 @@
 #define INCLUDED_DASH7_CCA_IMPL_H
 
 #include <dash7/cca.h>
+#include <vector>
 
 namespace gr {
   namespace dash7 {
@@ -29,7 +30,13 @@ namespace gr {
     class cca_impl : public cca
     {
      private:
-      // Nothing to declare in this block.
+		const static std::size_t MAX_CHANNELS;
+		const static std::size_t QUEUE_LEN;
+		const static std::size_t CONGESTION_TIMEOUT;
+		const static std::size_t INITIAL_TIMEOUT;
+
+		std::size_t			time_out;
+		std::vector<int>	channel_queue;
 
      public:
       cca_impl();
