@@ -26,6 +26,7 @@ include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND dash7_sources
+    cca_impl.cc
 )
 
 set(dash7_sources "${dash7_sources}" PARENT_SCOPE)
@@ -60,6 +61,7 @@ include_directories(${CPPUNIT_INCLUDE_DIRS})
 list(APPEND test_dash7_sources
     ${CMAKE_CURRENT_SOURCE_DIR}/test_dash7.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/qa_dash7.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/qa_cca.cc
 )
 
 add_executable(test-dash7 ${test_dash7_sources})

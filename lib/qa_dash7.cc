@@ -26,11 +26,13 @@
  */
 
 #include "qa_dash7.h"
+#include "qa_cca.h"
 
 CppUnit::TestSuite *
 qa_dash7::suite()
 {
   CppUnit::TestSuite *s = new CppUnit::TestSuite("dash7");
+  s->addTest(gr::dash7::qa_cca::suite());
 
   return s;
 }

@@ -22,5 +22,5 @@
 ########################################################################
 install(FILES
     api.h
-    DESTINATION include/dash7
+    cca.h DESTINATION include/dash7
 )
