@@ -26,6 +26,7 @@ include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND dash7_sources
+    crc_impl.cc
 )
 
 set(dash7_sources "${dash7_sources}" PARENT_SCOPE)

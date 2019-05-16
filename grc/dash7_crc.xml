@@ -1,0 +1,15 @@
+<block>
+  <name>Dash7 CRC16</name>
+  <key>dash7_crc</key>
+  <category>[DASH7]</category>
+  <import>import dash7</import>
+  <make>dash7.crc()</make>
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+  </source>
+</block>
