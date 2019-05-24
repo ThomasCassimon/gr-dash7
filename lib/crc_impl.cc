@@ -56,7 +56,8 @@ namespace gr {
             const auto *in = (const uint8_t *) input_items[0];
             auto *out = (uint8_t *) output_items[0];
 
-            for (uint8_t i = 0; i < noutput_items; i++) {
+            printf("Output items: %d", noutput_items);
+            for (size_t i = 0; i < noutput_items; i++) {
                 switch (state) {
                     case CRC_DONE:
                         // First byte is length, also reset the crc
@@ -84,8 +85,10 @@ namespace gr {
                         state = CRC_DONE;
                         break;
                 }
+                printf("%d\n", i);
             }
 
+            printf("FUCK, %d\n", noutput_items);
             // Tell runtime system how many output items we produced.
             return noutput_items;
         }
