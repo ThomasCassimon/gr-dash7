@@ -33,8 +33,8 @@ class qa_crc (gr_unittest.TestCase):
 
     def test_001_t (self):
         # set up test data
-        src_data = (0xe, 0x1, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x1, 0x0, 0x1, 0x0, 0x0)
-        expected = (0xe, 0x1, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x1, 0x0, 0x1, 0x92, 0x26)
+        src_data = (0x06, 0x1, 0xa, 0x8, 0x4, 0x0, 0x0)
+        expected = (0x60, 0xfe, 0xeb, 0x15, 0x9e, 0x11, 0x1d)
         crc = dash7.crc()
 
         # Calculate crc
@@ -44,22 +44,8 @@ class qa_crc (gr_unittest.TestCase):
         self.tb.connect(src, crc, dst)
         self.tb.run()
         result_data = dst.data()
+        print(result_data)
         assert(result_data == expected)
-
-        self.tearDown()
-        self.setUp()
-
-        # Check crc
-        result_data = list(result_data)
-        result_data[0] += 2
-        result_data.append(0xa)
-        result_data.append(0xa)
-        src = blocks.vector_source_b(result_data, vlen=1)
-        dst = blocks.vector_sink_b(vlen=1)
-        self.tb.connect(src, crc, dst)
-        self.tb.run()
-        should_be_0 = list(dst.data())
-        assert(should_be_0[-1] == 0 and should_be_0[-2] == 0)
 
 
 if __name__ == '__main__':

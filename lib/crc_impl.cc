@@ -62,9 +62,12 @@ namespace gr {
                         // First byte is length, also reset the crc
                         length = in[i];
                         crc = 0xffff;
-                        out[i] = in[i];
+                        out[i] = reverse(in[i]);
                         count = 0;
                         state = CRC_CALC;
+                        pn9_state = PN9_STATE;
+                        pn9_shift = PN9_SHIFT;
+                        //printf("reset %d\n", length);
                         break;
                     case CRC_CALC:
                         // 2 bytes crc (included), 1 byte length (not included)
@@ -77,6 +80,7 @@ namespace gr {
                             update_crc(in[i]);
                             out[i] = in[i];
                         }
+                        //out[i] = pn9_encoder(&pn9_state, &pn9_shift, out[i]);
                         count++;
                         break;
                     default:
@@ -97,6 +101,25 @@ namespace gr {
             crc_new ^= crc_new << 12;
             crc_new ^= (crc_new & 0xff) << 5;
             crc = crc_new;
+        }
+
+        uint8_t crc_impl::reverse(uint8_t b) {
+            b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+            b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+            b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+            return b;
+        }
+
+        uint8_t crc_impl::pn9_encoder(uint8_t *initalState, uint8_t *shiftValue, uint8_t src) {
+            uint8_t dest = src ^ * initalState;
+            uint8_t registerState;
+
+            for(int i = 0; i < 8; i++) {
+                registerState = (*initalState & 1) ^ ((*initalState & (1 << 5)) >> 5);
+                * initalState = (*initalState >> 1) | (*shiftValue << 7);
+                * shiftValue = registerState;
+            }
+            return dest;
         }
 
     } /* namespace dash7 */

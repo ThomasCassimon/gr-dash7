@@ -26,18 +26,24 @@
 #define CRC_DONE    0x01
 #define CRC_CALC    0x02
 
+#define PN9_STATE       0xff
+#define PN9_SHIFT       0x01
+
 namespace gr {
     namespace dash7 {
 
         class crc_impl : public crc {
         private:
             void update_crc(uint8_t x);
+            uint8_t pn9_encoder(uint8_t *initalState, uint8_t *shiftValue, uint8_t src);
+            uint8_t reverse(uint8_t b);
 
             uint16_t crc;
             uint8_t state;
             uint8_t length;
             uint8_t count;
-
+            uint8_t pn9_state;
+            uint8_t pn9_shift;
         public:
             crc_impl();
 
